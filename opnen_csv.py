@@ -61,8 +61,8 @@ print(f"Already processed: {already_processed}")
 
 def listen_for_keypress():
     global running
-    # Listen for the 'q' key to be pressed
-    keyboard.wait('q')
+    # Listen for the 'w' key to be pressed
+    keyboard.wait('w')
     running = False
 
 
@@ -129,13 +129,13 @@ def extract_data():
                         # Write no_email to an xlsx fileq
                         df = pd.DataFrame(no_email)
                         df.to_excel('no_email.xlsx', index=False)
-                        continue
+                    continue
                 
 
                 # Extract the last CAEN
                 last_caen = first_autocomplete['caen'][-1]
 
-                # Create a row with the complete and updated dataq
+                # Create a row with the complete and updated dataqqq
                 row = {
                     **row,
                     'primaryEmail': primary_email,
