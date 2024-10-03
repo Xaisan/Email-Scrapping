@@ -71,6 +71,7 @@ def extract_data():
     with open(csv_file_path, mode='r', encoding='utf-8') as file:
         csv_reader = csv.DictReader(file, delimiter='^')
         # Iterate through the rows
+        counter = 0
         for i, row in enumerate(csv_reader):
             # Check if the program should stop
             if not running:
@@ -140,16 +141,20 @@ def extract_data():
 
                 print(f"Company {i+1} with CUI {company_cui} has primaryEmail {primary_email} and lastCAEN {last_caen}")
 
+                counter += 1
+                
                 company_data_array.append(row)
-                # Write all the data from company_data_array to a new xlsx file
-                df = pd.DataFrame(company_data_array)
-                df.to_excel(company_data_array_file_path, index=False)
-                    
-                    
                 already_processed.append(str(company_cui))
-                # Write already_processed to an xlsx file
-                df = pd.DataFrame(already_processed)
-                df.to_excel('already_processed.xlsx', index=False)
+                
+                
+                if counter % 10 == 0:
+                    # Write all the data from company_data_array to a new xlsx fileq
+                    df = pd.DataFrame(company_data_array)
+                    df.to_excel(company_data_array_file_path, index=False)
+                    
+                    # Write already_processed to an xlsx file
+                    df = pd.DataFrame(already_processed)
+                    df.to_excel('already_processed.xlsx', index=False)
 
 
 
