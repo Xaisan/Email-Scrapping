@@ -72,6 +72,7 @@ def extract_data():
         csv_reader = csv.DictReader(file, delimiter='^')
         # Iterate through the rows
         counter = 0
+        no_email_counter = 0
         for i, row in enumerate(csv_reader):
             # Check if the program should stop
             if not running:
@@ -121,12 +122,14 @@ def extract_data():
                 primary_email = first_autocomplete['primaryEmail']
 
                 if not primary_email:
+                    no_email_counter += 1
                     print(f"Company {i+1} with CUI {company_cui} has no primaryEmail")
                     no_email.append(str(company_cui))
-                    # Write no_email to an xlsx file
-                    df = pd.DataFrame(no_email)
-                    df.to_excel('no_email.xlsx', index=False)
-                    continue
+                    if no_email_counter % 10 == 0:
+                        # Write no_email to an xlsx fileq
+                        df = pd.DataFrame(no_email)
+                        df.to_excel('no_email.xlsx', index=False)
+                        continue
                 
 
                 # Extract the last CAEN
