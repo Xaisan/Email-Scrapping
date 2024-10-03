@@ -1,0 +1,6 @@
+# Ignore all .xlsx files
+*.xlsx
+*.csv
+
+# Ignore __pycache__ directories
+__pycache__/
