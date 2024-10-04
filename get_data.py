@@ -17,7 +17,7 @@ def get_company_data(company_id):
         "Sec-Fetch-Site": "same-origin",
         "Priority": "u=4"
     }
-zasdasd
+
     payload = {
         "operationName": "autocomplete",
         "variables": {"text": company_id},
