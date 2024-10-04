@@ -5,7 +5,7 @@ import pandas as pd
 import keyboard
 import threading
 
-ADR_JUDET_FILTER = 'Dâmbovița'
+ADR_JUDET_FILTER = 'București'
 running = True
 
 # Path to your CSV file
@@ -96,7 +96,7 @@ def extract_data():
                 try:
                     # Get the company data
                     company_data = get_company_data(company_cui)
-                    # Sleep for 1 secod to avoid getting blockedqq
+                    # Sleep for 1 second to avoid getting blocked
                     time.sleep(0.1)
                 except Exception as e:
                     try:
@@ -105,32 +105,40 @@ def extract_data():
                         time.sleep(0.1)
                         # Retry getting the company data
                         company_data = get_company_data(company_cui)
-                        # Sleep for 1 secod to avoid getting blocked
+                        # Sleep for 1 second to avoid getting blocked
                         time.sleep(0.1)
                     except Exception as e:
                         print(f"Failed to get data for company with CUI {company_cui}: {e}")
                         errors.append(str(company_cui))
-                        # Write errors to an xlsx fileq
+                        # Write errors to an xlsx file
                         df = pd.DataFrame(errors)
                         df.to_excel('errors.xlsx', index=False)
                         continue
-                
-                # Extract the first autocomplete elementq
-                first_autocomplete = company_data['data']['autocomplete'][0]
 
-                # Extract the primaryEmail
-                primary_email = first_autocomplete['primaryEmail']
+                # Check if 'autocomplete' exists and is not empty
+                if 'autocomplete' in company_data['data'] and company_data['data']['autocomplete']:
+                    # Extract the first autocomplete element
+                    first_autocomplete = company_data['data']['autocomplete'][0]
 
-                if not primary_email:
-                    no_email_counter += 1
-                    print(f"Company {i+1} with CUI {company_cui} has no primaryEmail")
-                    no_email.append(str(company_cui))
-                    if no_email_counter % 10 == 0:
-                        # Write no_email to an xlsx fileq
-                        df = pd.DataFrame(no_email)
-                        df.to_excel('no_email.xlsx', index=False)
+                    # Extract the primaryEmail
+                    primary_email = first_autocomplete['primaryEmail']
+
+                    if not primary_email:
+                        no_email_counter += 1
+                        print(f"Company {i+1} with CUI {company_cui} has no primaryEmail")
+                        no_email.append(str(company_cui))
+                        if no_email_counter % 10 == 0:
+                            # Write no_email to an xlsx fileq
+                            df = pd.DataFrame(no_email)
+                            df.to_excel('no_email.xlsx', index=False)
+                        continue
+                else:
+                    print(f"No autocomplete data for company with CUI {company_cui}")
+                    errors.append(str(company_cui))
+                    # Write errors to an xlsx file
+                    df = pd.DataFrame(errors)
+                    df.to_excel('errors.xlsx', index=False)
                     continue
-                
 
                 # Extract the last CAEN
                 last_caen = first_autocomplete['caen'][-1]
@@ -175,4 +183,3 @@ if __name__ == '__main__':
     keypress_thread.join()
 
     print("Program terminated.")
-
